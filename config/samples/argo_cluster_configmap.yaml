@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-config
+data: 
+  config.yml: |-
+    clusters:
+    - clusterName: cluster-1
+      status: MAINTENANCE
+    - clusterName: cluster-2
+      status: ACTIVE
+    - clusterName: cluster-3
+      status: ACTIVE

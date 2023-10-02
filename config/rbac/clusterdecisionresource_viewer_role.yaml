@@ -1,0 +1,27 @@
+# permissions for end users to view clusterdecisionresources.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: clusterdecisionresource-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: cdr-operator
+    app.kubernetes.io/part-of: cdr-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: clusterdecisionresource-viewer-role
+rules:
+- apiGroups:
+  - argo.generators.bashkimkasa
+  resources:
+  - clusterdecisionresources
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - argo.generators.bashkimkasa
+  resources:
+  - clusterdecisionresources/status
+  verbs:
+  - get

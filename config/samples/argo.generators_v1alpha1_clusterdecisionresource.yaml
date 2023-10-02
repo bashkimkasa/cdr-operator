@@ -1,0 +1,13 @@
+apiVersion: argo.generators.bashkimkasa/v1alpha1
+kind: ClusterDecisionResource
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterdecisionresource
+    app.kubernetes.io/instance: clusterdecisionresource-sample
+    app.kubernetes.io/part-of: cdr-operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: cdr-operator
+  name: clusterdecisionresource-sample
+spec:
+  maxClusters: 1
+  clusterList: ["cluster-1", "cluster-2"]
