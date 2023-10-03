@@ -133,7 +133,7 @@ func getenv(key, fallback string) string {
 
 // Calculate the decisions and store in status of the CR
 func calculateDecisions(cr *argogeneratorsv1alpha1.ClusterDecisionResource, configmap *corev1.ConfigMap) ([]map[string]string, error) {
-	// TODO - implement real logic here - for the time being implementing a fake logic
+	// Simple logic implementation - compare desired clusters against the cluster-config map to excluse the cluster with status not ACTIVE 
 	desired_clusters := cr.Spec.ClusterList
 	max_clusters := cr.Spec.MaxClusters
 	decisions := []map[string]string{}
