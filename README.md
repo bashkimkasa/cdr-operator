@@ -4,6 +4,8 @@ Sample kubernetes operator implementing the custom resoures and resouce-specific
 ## Description
 This sample kubernetes operator defines and constructs the custom resource definition(CRD) of type "ClusterDecisionResource". It also builds a controller to watch the CRs of this custom type along with an external ConfigMap which contains the ArgoCD managed cluster and their corresponding status. It implements sample logic to create the "decisions" list of clusters from comparing the desired clusters along with the max number of clusters to deploy to in the CR with the data from the ConfigMap in order to avoid deploying to clusters in Maintenance mode. These CRs are read via duck-typing by the [ArgoCD ApplicationSet Controller Cluster Decision Resource generator](https://argocd-applicationset.readthedocs.io/en/stable/Generators-Cluster-Decision-Resource/)
 
+Sample yaml resouces for CRs and configmaps can be found in config/samples folder
+
 ## Getting Started
 You’ll need a Kubernetes cluster to run against. You can use [KIND](https://sigs.k8s.io/kind) to get a local cluster for testing, or run against a remote cluster.
 **Note:** Your controller will automatically use the current context in your kubeconfig file (i.e. whatever cluster `kubectl cluster-info` shows).

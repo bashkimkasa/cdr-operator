@@ -61,8 +61,11 @@ type ClusterConfigData struct {
 func (r *ClusterDecisionResourceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := log.FromContext(ctx)
 
-	// Step 1 - Fetch CR instance
+	// Step 0 - Define and setup resource variables
 	cr := &argogeneratorsv1alpha1.ClusterDecisionResource{}
+	configmap := &corev1.ConfigMap{}
+
+	// Step 1 - Fetch CR instance
 	err := r.Get(ctx, req.NamespacedName, cr)
 	if err != nil {
 		if apierrors.IsNotFound(err) {
@@ -76,7 +79,6 @@ func (r *ClusterDecisionResourceReconciler) Reconcile(ctx context.Context, req c
 	}
 
 	// Step 2 - Get configmap
-	configmap := &corev1.ConfigMap{}
 	err = r.Get(ctx, types.NamespacedName{Name: configMapName, Namespace: configMapNamespace}, configmap)
 	if err != nil {
 		if apierrors.IsNotFound(err) {
@@ -101,6 +103,14 @@ func (r *ClusterDecisionResourceReconciler) Reconcile(ctx context.Context, req c
 		//Update cr object with new decisions
 		cr.Status.Decisions = decisions
 		if err = r.Update(ctx, cr); err != nil {
+			if apierrors.IsConflict(err) {
+				// The CR has been updated since we read it; reqeue the CR to try to reconciliate again.
+				return ctrl.Result{Requeue: true}, nil
+			}
+			if apierrors.IsNotFound(err) {
+				// The CR has been deleted since we read it; requeue the CR to try to reconciliate again.
+				return ctrl.Result{Requeue: true}, nil
+			}
 			log.Error(err, "Failed to update CR status with decisions")
 			return ctrl.Result{}, err
 		}
@@ -168,12 +178,6 @@ func calculateDecisions(cr *argogeneratorsv1alpha1.ClusterDecisionResource, conf
 	}
 
 	return decisions, nil
-
-	// // For the time being return a simple set of static decisions
-	// return []map[string]string{
-	// 	{"clusterName": "cluster-1"},
-	// 	{"clusterName": "cluster-2"},
-	// }, nil
 }
 
 func (r *ClusterDecisionResourceReconciler) getRequestsFromConfigMap(configMap client.Object) []reconcile.Request {
